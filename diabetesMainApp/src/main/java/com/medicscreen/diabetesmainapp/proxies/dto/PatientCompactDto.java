@@ -1,5 +1,7 @@
 package com.medicscreen.diabetesmainapp.proxies.dto;
 
+import java.time.LocalDate;
+
 public class PatientCompactDto {
 
   private Integer id;

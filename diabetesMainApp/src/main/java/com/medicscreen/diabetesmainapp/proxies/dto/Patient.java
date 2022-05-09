@@ -1,11 +1,27 @@
 package com.medicscreen.diabetesmainapp.proxies.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import java.time.LocalDate;
+
 public class Patient {
   private Integer id;
+
+  @NotEmpty(message = "Saisissez un prénom obligatoirement")
   private String firstName;
+
+  @NotEmpty(message = "Saisissez un nom obligatoirement")
   private String lastName;
+
+  @NotEmpty(message = "Saisissez une date de naissance obligatoirement (ex: 01-01-1900)")
   private String dateOfBirth;
+
+  @NotEmpty(message = "Sélectionnez un genre obligatoirement")
   private String gender;
+
   private String address;
   private String phone;
 
