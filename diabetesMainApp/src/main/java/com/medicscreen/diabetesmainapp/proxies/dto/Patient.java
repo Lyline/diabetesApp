@@ -1,11 +1,8 @@
 package com.medicscreen.diabetesmainapp.proxies.dto;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Patient {
   private Integer id;
@@ -24,6 +21,7 @@ public class Patient {
 
   private String address;
   private String phone;
+  private List<NoteDto> notes= new ArrayList<>();
 
   public Patient() {
   }
@@ -66,6 +64,10 @@ public class Patient {
     return phone;
   }
 
+  public List<NoteDto> getNotes() {
+    return notes;
+  }
+
   public static class PatientBuilder {
     private Integer id;
     private String firstName;
@@ -74,6 +76,7 @@ public class Patient {
     private String gender;
     private String address;
     private String phone;
+    private List<NoteDto>notes=  new ArrayList<>();
 
     public PatientBuilder id(Integer id){
       this.id=id;

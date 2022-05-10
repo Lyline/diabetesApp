@@ -3,15 +3,16 @@ package com.medicscreen.diabetesmainapp;
 import com.medicscreen.diabetesmainapp.proxies.DiagnosticProxy;
 import com.medicscreen.diabetesmainapp.proxies.NoteProxy;
 import com.medicscreen.diabetesmainapp.proxies.PatientProxy;
+import com.medicscreen.diabetesmainapp.proxies.dto.Note;
+import com.medicscreen.diabetesmainapp.proxies.dto.NoteDto;
+import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto.PatientCompactBuilder;
-import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class DiabetesService {
@@ -45,7 +46,16 @@ public class DiabetesService {
   }
 
   public Patient getPatientById(int id) {
-    return patientProxy.getPatientById(id);
+    Patient patient=patientProxy.getPatientById(id);
+    List<Note> notes= noteProxy.getAllNotesByPatient(id);
+
+    if (Objects.nonNull(notes)) {
+      for (Note note:notes){
+        NoteDto noteDto= new NoteDto(note.getId(),note.getNoteContent());
+        patient.getNotes().add(noteDto);
+      }
+    }
+    return patient;
   }
 
   public Patient addPatient(Patient patient) {
@@ -58,5 +68,17 @@ public class DiabetesService {
 
   public void deletePatient(int id) {
     patientProxy.deletePatient(id);
+  }
+
+  public Note addNote(Note note) {
+    return noteProxy.addNote(note);
+  }
+
+  public Note updateNote(String noteId, Note noteToUpdate) {
+    return noteProxy.updateNote(noteId,noteToUpdate);
+  }
+
+  public boolean deleteNote(String noteId) {
+    return noteProxy.deleteNoteById(noteId);
   }
 }

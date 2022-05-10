@@ -4,21 +4,22 @@ import com.medicscreen.diabetesmainapp.DiabetesService;
 import com.medicscreen.diabetesmainapp.proxies.DiagnosticProxy;
 import com.medicscreen.diabetesmainapp.proxies.NoteProxy;
 import com.medicscreen.diabetesmainapp.proxies.PatientProxy;
-import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
+import com.medicscreen.diabetesmainapp.proxies.dto.Note;
+import com.medicscreen.diabetesmainapp.proxies.dto.Note.NoteBuilder;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient.PatientBuilder;
+import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
-public class DiabetesServiceTest {
+public class PatientServiceTest {
   private final PatientProxy patientProxy= mock(PatientProxy.class);
   private final NoteProxy noteProxy= mock(NoteProxy.class);
   private final DiagnosticProxy diagnosticProxy= mock(DiagnosticProxy.class);
@@ -42,6 +43,18 @@ public class DiabetesServiceTest {
       .gender("F")
       .address("Address of Jane")
       .phone("123-123")
+      .build();
+
+  Note note= new NoteBuilder()
+      .id("aze")
+      .patientId(1)
+      .noteContent("test note 1")
+      .build();
+
+  Note note1= new NoteBuilder()
+      .id("ert")
+      .patientId(1)
+      .noteContent("test note 2")
       .build();
 
   @Test
@@ -74,13 +87,16 @@ public class DiabetesServiceTest {
   void givenPatientExistingWhenGetPatientByIdThenReturnPatient() {
     //Given
     when(patientProxy.getPatientById(anyInt())).thenReturn(patient);
+    when(noteProxy.getAllNotesByPatient(anyInt())).thenReturn(List.of(note,note1));
 
     //When
     Patient actual= service.getPatientById(1);
 
     //Then
-    assertSame(actual,patient);
+    assertThat(actual.getFirstName()).isEqualTo("John");
+    assertThat(actual.getNotes().size()).isEqualTo(2);
     verify(patientProxy, times(1)).getPatientById(1);
+    verify(noteProxy, times(1)).getAllNotesByPatient(1);
   }
 
   @Test
@@ -94,6 +110,7 @@ public class DiabetesServiceTest {
     //Then
     assertNull(actual);
     verify(patientProxy, times(1)).getPatientById(1);
+    verify(noteProxy, times(1)).getAllNotesByPatient(1);
   }
 
   @Test

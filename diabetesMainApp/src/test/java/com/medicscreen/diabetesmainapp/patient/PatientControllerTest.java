@@ -1,5 +1,6 @@
 package com.medicscreen.diabetesmainapp.patient;
 
+import com.medicscreen.diabetesmainapp.DiabetesController;
 import com.medicscreen.diabetesmainapp.DiabetesService;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient.PatientBuilder;
@@ -7,11 +8,12 @@ import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto.PatientCompactBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -20,11 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-import java.util.Optional;
-
-@WebMvcTest
-public class DiabetesControllerTest {
+@WebMvcTest(DiabetesController.class)
+public class PatientControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -41,7 +40,7 @@ public class DiabetesControllerTest {
       .build();
 
   @Test
-  void givenTwoPatientWhenGetAllPatientThenReturnListOfTwoPatientsWithStatus200() throws Exception {
+  void givenTwoPatientsWhenGetAllPatientThenReturnListOfTwoPatientsWithStatus200() throws Exception {
     //Given
     PatientCompactDto patient= new PatientCompactBuilder()
         .firstName("John")
@@ -91,7 +90,8 @@ public class DiabetesControllerTest {
                 "\"dateOfBirth\":\"2000-01-01\"," +
                 "\"gender\":\"M\"," +
                 "\"address\":\"Address of John\"," +
-                "\"phone\":\"123-453\"}"
+                "\"phone\":\"123-453\"," +
+                "\"notes\":[]}"
         ));
   }
 
@@ -151,15 +151,6 @@ public class DiabetesControllerTest {
   @Test
   void givenPatientExistingWithValidUpdateWhenUpdatePatientThenReturnPatientUpdatedWithStatus201() throws Exception {
     //Given
-    Patient patientToUpdate= new PatientBuilder()
-        .firstName("Mary")
-        .lastName("Smith")
-        .dateOfBirth("1990-01-01")
-        .gender("F")
-        .address("Address of Mary")
-        .phone("000-000")
-        .build();
-
     Patient patientUpdated= new PatientBuilder()
         .id(1)
         .firstName("Mary")
@@ -189,6 +180,7 @@ public class DiabetesControllerTest {
   void givenPatientExistingWithNotValidUpdateWhenUpdatePatientThenReturnErrorMessagesWithStatus400() throws Exception {
     //Given
     when(service.updatePatient(anyInt(),any())).thenReturn(null);
+
     //When
     mockMvc.perform(put("/diabetesApp/patients/1")
             .contentType(MediaType.APPLICATION_JSON)

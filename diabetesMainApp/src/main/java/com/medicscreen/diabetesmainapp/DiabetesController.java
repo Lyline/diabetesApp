@@ -1,10 +1,10 @@
 package com.medicscreen.diabetesmainapp;
 
 import com.medicscreen.diabetesmainapp.exception.HandlerException;
+import com.medicscreen.diabetesmainapp.proxies.dto.Note;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,5 +73,32 @@ public class DiabetesController extends HandlerException {
   public ResponseEntity deletePatient(@PathVariable int id){
     service.deletePatient(id);
     return new ResponseEntity(HttpStatus.OK);
+  }
+
+  @PostMapping("/patients/{patientId}/notes")
+  public ResponseEntity<Note> addNote(@PathVariable int patientId, @Valid @RequestBody Note note){
+
+    Note noteSaved= service.addNote(note);
+
+    return new ResponseEntity<>(noteSaved,HttpStatus.CREATED);
+  }
+
+  @PutMapping("/patients/{patientId}/notes/{noteId}")
+  public ResponseEntity<Note> updateNote(@PathVariable String patientId, @PathVariable String noteId,
+                                          @Valid @RequestBody Note noteToUpdate){
+    Note noteUpdated= service.updateNote(noteId, noteToUpdate);
+
+    if (Objects.nonNull(noteUpdated)){
+      return new ResponseEntity<>(noteUpdated,HttpStatus.CREATED);
+    }return null;
+  }
+
+  @DeleteMapping("/patients/{patientId}/notes/{noteId}")
+  public ResponseEntity deleteNote(@PathVariable String patientId, @PathVariable String noteId){
+    boolean patientDeleted= service.deleteNote(noteId);
+
+    if (patientDeleted){
+      return new ResponseEntity(HttpStatus.OK);
+    }return new ResponseEntity(HttpStatus.NOT_FOUND);
   }
 }
