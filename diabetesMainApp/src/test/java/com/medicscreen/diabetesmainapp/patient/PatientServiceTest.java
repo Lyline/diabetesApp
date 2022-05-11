@@ -4,6 +4,7 @@ import com.medicscreen.diabetesmainapp.DiabetesService;
 import com.medicscreen.diabetesmainapp.proxies.DiagnosticProxy;
 import com.medicscreen.diabetesmainapp.proxies.NoteProxy;
 import com.medicscreen.diabetesmainapp.proxies.PatientProxy;
+import com.medicscreen.diabetesmainapp.proxies.dto.Diagnostic;
 import com.medicscreen.diabetesmainapp.proxies.dto.Note;
 import com.medicscreen.diabetesmainapp.proxies.dto.Note.NoteBuilder;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
@@ -86,8 +87,11 @@ public class PatientServiceTest {
   @Test
   void givenPatientExistingWhenGetPatientByIdThenReturnPatient() {
     //Given
+    Diagnostic diagnostic=new Diagnostic("Borderline");
+
     when(patientProxy.getPatientById(anyInt())).thenReturn(patient);
     when(noteProxy.getAllNotesByPatient(anyInt())).thenReturn(List.of(note,note1));
+    when(diagnosticProxy.getDiagnostic(anyInt())).thenReturn(diagnostic);
 
     //When
     Patient actual= service.getPatientById(1);
@@ -97,6 +101,7 @@ public class PatientServiceTest {
     assertThat(actual.getNotes().size()).isEqualTo(2);
     verify(patientProxy, times(1)).getPatientById(1);
     verify(noteProxy, times(1)).getAllNotesByPatient(1);
+    verify(diagnosticProxy, times(1)).getDiagnostic(1);
   }
 
   @Test
@@ -110,7 +115,8 @@ public class PatientServiceTest {
     //Then
     assertNull(actual);
     verify(patientProxy, times(1)).getPatientById(1);
-    verify(noteProxy, times(1)).getAllNotesByPatient(1);
+    verify(noteProxy, times(0)).getAllNotesByPatient(1);
+    verify(diagnosticProxy,times(0)).getDiagnostic(1);
   }
 
   @Test

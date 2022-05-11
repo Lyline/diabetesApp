@@ -22,6 +22,7 @@ public class Patient {
   private String address;
   private String phone;
   private List<NoteDto> notes= new ArrayList<>();
+  private String diagnostic;
 
   public Patient() {
   }
@@ -66,6 +67,14 @@ public class Patient {
 
   public List<NoteDto> getNotes() {
     return notes;
+  }
+
+  public String getDiagnostic() {
+    return diagnostic;
+  }
+
+  public void setDiagnostic(String diagnostic) {
+    this.diagnostic = diagnostic;
   }
 
   public static class PatientBuilder {

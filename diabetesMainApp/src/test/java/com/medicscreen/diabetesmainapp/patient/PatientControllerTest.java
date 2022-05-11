@@ -2,10 +2,13 @@ package com.medicscreen.diabetesmainapp.patient;
 
 import com.medicscreen.diabetesmainapp.DiabetesController;
 import com.medicscreen.diabetesmainapp.DiabetesService;
+import com.medicscreen.diabetesmainapp.proxies.dto.Diagnostic;
+import com.medicscreen.diabetesmainapp.proxies.dto.NoteDto;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
 import com.medicscreen.diabetesmainapp.proxies.dto.Patient.PatientBuilder;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto.PatientCompactBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,6 +41,19 @@ public class PatientControllerTest {
       .gender("M").address("Address of John")
       .phone("123-453")
       .build();
+
+  NoteDto note= new NoteDto("aze","note");
+
+  NoteDto note1= new NoteDto("azer","note 1");
+
+  Diagnostic diagnostic= new Diagnostic("None");
+
+  @BeforeEach
+  void setUp() {
+    patient.getNotes().add(note);
+    patient.getNotes().add(note1);
+    patient.setDiagnostic(diagnostic.getDiagnostic());
+  }
 
   @Test
   void givenTwoPatientsWhenGetAllPatientThenReturnListOfTwoPatientsWithStatus200() throws Exception {
@@ -91,7 +107,9 @@ public class PatientControllerTest {
                 "\"gender\":\"M\"," +
                 "\"address\":\"Address of John\"," +
                 "\"phone\":\"123-453\"," +
-                "\"notes\":[]}"
+                "\"notes\":[{\"id\":\"aze\",\"noteContent\":\"note\"}," +
+                          "{\"id\":\"azer\",\"noteContent\":\"note 1\"}]," +
+                "\"diagnostic\":\"None\"}"
         ));
   }
 

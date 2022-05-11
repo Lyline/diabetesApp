@@ -3,10 +3,7 @@ package com.medicscreen.diabetesmainapp;
 import com.medicscreen.diabetesmainapp.proxies.DiagnosticProxy;
 import com.medicscreen.diabetesmainapp.proxies.NoteProxy;
 import com.medicscreen.diabetesmainapp.proxies.PatientProxy;
-import com.medicscreen.diabetesmainapp.proxies.dto.Note;
-import com.medicscreen.diabetesmainapp.proxies.dto.NoteDto;
-import com.medicscreen.diabetesmainapp.proxies.dto.Patient;
-import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
+import com.medicscreen.diabetesmainapp.proxies.dto.*;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto.PatientCompactBuilder;
 import org.springframework.stereotype.Service;
 
@@ -47,12 +44,18 @@ public class DiabetesService {
 
   public Patient getPatientById(int id) {
     Patient patient=patientProxy.getPatientById(id);
-    List<Note> notes= noteProxy.getAllNotesByPatient(id);
 
-    if (Objects.nonNull(notes)) {
-      for (Note note:notes){
-        NoteDto noteDto= new NoteDto(note.getId(),note.getNoteContent());
-        patient.getNotes().add(noteDto);
+    if (Objects.nonNull(patient)) {
+      List<Note> notes= noteProxy.getAllNotesByPatient(id);
+      Diagnostic diagnostic= diagnosticProxy.getDiagnostic(id);
+
+      if (Objects.nonNull(notes)) {
+        for (Note note:notes){
+          NoteDto noteDto= new NoteDto(note.getId(),note.getNoteContent());
+          patient.getNotes().add(noteDto);
+        }
+          patient.setDiagnostic(diagnostic.getDiagnostic());
+
       }
     }
     return patient;
