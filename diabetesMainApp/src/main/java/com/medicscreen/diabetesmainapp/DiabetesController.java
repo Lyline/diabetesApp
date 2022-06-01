@@ -40,7 +40,7 @@ public class DiabetesController extends HandlerException {
     if (Objects.nonNull(patient)) {
       return new ResponseEntity<>(patient,HttpStatus.OK);
     }
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    return new ResponseEntity(Collections.emptyList(),HttpStatus.OK);
   }
 
   @PostMapping("/patients")
@@ -53,7 +53,7 @@ public class DiabetesController extends HandlerException {
         .buildAndExpand(patientSaved.getId())
         .toUri();
 
-    return ResponseEntity.created(location).build();
+    return ResponseEntity.created(location).body(patientSaved);
   }
 
   @PutMapping(value = "/patients/{id}")
@@ -66,7 +66,7 @@ public class DiabetesController extends HandlerException {
         .buildAndExpand(patientUpdated.getId())
         .toUri();
 
-    return ResponseEntity.created(location).build();
+    return ResponseEntity.created(location).body(patientToUpdate);
   }
 
   @DeleteMapping("/patients/{id}")
@@ -85,7 +85,7 @@ public class DiabetesController extends HandlerException {
 
   @PutMapping("/patients/{patientId}/notes/{noteId}")
   public ResponseEntity<Note> updateNote(@PathVariable String patientId, @PathVariable String noteId,
-                                          @Valid @RequestBody Note noteToUpdate){
+                                         @Valid @RequestBody Note noteToUpdate){
     Note noteUpdated= service.updateNote(noteId, noteToUpdate);
 
     if (Objects.nonNull(noteUpdated)){
@@ -102,3 +102,4 @@ public class DiabetesController extends HandlerException {
     }return new ResponseEntity(HttpStatus.NOT_FOUND);
   }
 }
+

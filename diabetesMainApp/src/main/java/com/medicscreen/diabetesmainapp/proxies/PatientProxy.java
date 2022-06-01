@@ -10,9 +10,11 @@ import java.util.List;
 
 public interface PatientProxy {
   @RequestLine("GET /patients")
+  @Headers("Content-Type: application/json")
   List<Patient> getAllPatients();
 
   @RequestLine("GET /patients/{id}")
+  @Headers("Content-Type: application/json")
   Patient getPatientById(@Param int id);
 
   @RequestLine("POST /patients")

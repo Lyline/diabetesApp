@@ -12,6 +12,7 @@ import com.medicscreen.diabetesmainapp.proxies.dto.Patient.PatientBuilder;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class PatientServiceTest {
       .build();
 
   Patient patient1= new PatientBuilder()
+      .id(2)
       .firstName("Jane")
       .lastName("Doe")
       .dateOfBirth("1990-01-01")
@@ -87,7 +89,7 @@ public class PatientServiceTest {
   @Test
   void givenPatientExistingWhenGetPatientByIdThenReturnPatient() {
     //Given
-    Diagnostic diagnostic=new Diagnostic("Borderline");
+    Diagnostic diagnostic=new Diagnostic(22,"Borderline");
 
     when(patientProxy.getPatientById(anyInt())).thenReturn(patient);
     when(noteProxy.getAllNotesByPatient(anyInt())).thenReturn(List.of(note,note1));
@@ -123,6 +125,7 @@ public class PatientServiceTest {
   void givenNewValidPatientWhenAddPatientThenReturnPatientSaved() {
     //Given
     Patient patientToSave= new PatientBuilder()
+        .id(1)
         .firstName("John")
         .lastName("Doe")
         .dateOfBirth("2000-01-01")
@@ -145,6 +148,7 @@ public class PatientServiceTest {
   void givenNewNotValidPatientWhenAddPatientThenReturnNull() {
     //Given
     Patient patientToSave= new PatientBuilder()
+        .id(1)
         .firstName("John")
         .lastName("Doe")
         .dateOfBirth("2000-01-01")

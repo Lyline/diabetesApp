@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +47,7 @@ public class PatientControllerTest {
 
   NoteDto note1= new NoteDto("azer","note 1");
 
-  Diagnostic diagnostic= new Diagnostic("None");
+  Diagnostic diagnostic= new Diagnostic(22,"None");
 
   @BeforeEach
   void setUp() {

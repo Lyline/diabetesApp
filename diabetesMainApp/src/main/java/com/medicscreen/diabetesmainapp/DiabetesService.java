@@ -28,16 +28,18 @@ public class DiabetesService {
     List<PatientCompactDto> patients= new ArrayList<>();
     List<Patient> patientDtos= patientProxy.getAllPatients();
 
-    for (Patient patient:patientDtos){
-      PatientCompactDto patientCompact= new PatientCompactBuilder()
-          .id(patient.getId())
-          .firstName(patient.getFirstName())
-          .lastName(patient.getLastName())
-          .dateOfBirth(patient.getDateOfBirth())
-          .address(patient.getAddress())
-          .build();
+    if (Objects.nonNull(patientDtos)) {
+      for (Patient patient:patientDtos){
+        PatientCompactDto patientCompact= new PatientCompactBuilder()
+            .id(patient.getId())
+            .firstName(patient.getFirstName())
+            .lastName(patient.getLastName())
+            .dateOfBirth(patient.getDateOfBirth())
+            .address(patient.getAddress())
+            .build();
 
-      patients.add(patientCompact);
+        patients.add(patientCompact);
+      }
     }
     return patients;
   }
@@ -54,9 +56,9 @@ public class DiabetesService {
           NoteDto noteDto= new NoteDto(note.getId(),note.getNoteContent());
           patient.getNotes().add(noteDto);
         }
-          patient.setDiagnostic(diagnostic.getDiagnostic());
-
       }
+      patient.setDiagnostic(diagnostic.getDiagnostic());
+      patient.setAge(diagnostic.getAge());
     }
     return patient;
   }

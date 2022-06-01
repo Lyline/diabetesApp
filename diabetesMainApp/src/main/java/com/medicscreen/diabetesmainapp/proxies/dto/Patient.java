@@ -1,11 +1,15 @@
 package com.medicscreen.diabetesmainapp.proxies.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Patient {
-  private Integer id;
+  private int id;
 
   @NotEmpty(message = "Saisissez un prénom obligatoirement")
   private String firstName;
@@ -13,12 +17,15 @@ public class Patient {
   @NotEmpty(message = "Saisissez un nom obligatoirement")
   private String lastName;
 
+  @DateTimeFormat(pattern = "dd-MM-yyyy")
+  @NotNull(message = "Saisissez une date de naissance obligatoirement (ex: 01-01-1900)")
   @NotEmpty(message = "Saisissez une date de naissance obligatoirement (ex: 01-01-1900)")
   private String dateOfBirth;
 
   @NotEmpty(message = "Sélectionnez un genre obligatoirement")
   private String gender;
 
+  private int age;
   private String address;
   private String phone;
   private List<NoteDto> notes= new ArrayList<>();
@@ -57,6 +64,10 @@ public class Patient {
     return gender;
   }
 
+  public int getAge() {
+    return age;
+  }
+
   public String getAddress() {
     return address;
   }
@@ -75,6 +86,10 @@ public class Patient {
 
   public void setDiagnostic(String diagnostic) {
     this.diagnostic = diagnostic;
+  }
+
+  public void setAge(int age) {
+    this.age = age;
   }
 
   public static class PatientBuilder {
