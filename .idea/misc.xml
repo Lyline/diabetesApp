@@ -9,6 +9,10 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/diabetesMainApp" />
+    <file type="web" url="file://$PROJECT_DIR$/diagnosticMicroservice" />
+    <file type="web" url="file://$PROJECT_DIR$/noteMicroservice" />
+    <file type="web" url="file://$PROJECT_DIR$/patientMicroservice" />
+    <file type="web" url="file://$PROJECT_DIR$/../patientMicroservice" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
