@@ -12,7 +12,6 @@ import com.medicscreen.diabetesmainapp.proxies.dto.Patient.PatientBuilder;
 import com.medicscreen.diabetesmainapp.proxies.dto.PatientCompactDto;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -192,6 +191,8 @@ public class PatientServiceTest {
   @Test
   void givenPatientExistingWhenDeletePatientThenPatientDeleted() {
     //Given
+    when(noteProxy.getAllNotesByPatient(anyInt())).thenReturn(Collections.emptyList());
+
     //When
     service.deletePatient(1);
 

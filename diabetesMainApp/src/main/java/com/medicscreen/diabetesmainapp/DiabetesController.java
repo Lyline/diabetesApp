@@ -40,7 +40,7 @@ public class DiabetesController extends HandlerException {
     if (Objects.nonNull(patient)) {
       return new ResponseEntity<>(patient,HttpStatus.OK);
     }
-    return new ResponseEntity(Collections.emptyList(),HttpStatus.OK);
+    return new ResponseEntity(Collections.emptyList(),HttpStatus.NOT_FOUND);
   }
 
   @PostMapping("/patients")

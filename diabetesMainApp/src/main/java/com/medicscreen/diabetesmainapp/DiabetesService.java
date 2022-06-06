@@ -72,6 +72,13 @@ public class DiabetesService {
   }
 
   public void deletePatient(int id) {
+    List<Note> notes= noteProxy.getAllNotesByPatient(id);
+
+    if (notes.size()!=0) {
+      for (Note note:notes){
+        noteProxy.deleteNoteById(note.getId());
+      }
+    }
     patientProxy.deletePatient(id);
   }
 
