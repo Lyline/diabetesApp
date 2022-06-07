@@ -1,0 +1,72 @@
+version: '3.1'
+
+services:
+
+  ### Proxy Service ###
+  proxy:
+    image: 'proxy_service'
+    container_name: proxy
+    build:
+      context: diabetesMainApp
+    ports:
+      - "8080:8080"
+    depends_on:
+      - patient
+      - note
+      - diagnostic
+
+  ### Diagnostic Service ###
+  diagnostic:
+    image: 'diagnostic_service'
+    container_name: diagnostic
+    build:
+      context: diagnosticMicroservice
+    depends_on:
+      - patient
+      - note
+
+  ### Patient Service ###
+  patient:
+    image: 'patient_service'
+    container_name: patients
+    build:
+      context: patientMicroservice
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/patient_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  ### Note Service ###
+  note:
+    image: 'note_service'
+    container_name: notes
+    build:
+      context: noteMicroservice
+    depends_on:
+      - mongo_db
+
+  ### PostgreSQL ###
+  db:
+    image: 'postgres:13-alpine3.15'
+    container_name: db
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=patient_db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ### MongoDB ###
+  mongo_db:
+    image: 'mongo'
+    container_name: 'note_db_container'
+    environment:
+      - MONGO_INITDB_DATABASE=notes
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
