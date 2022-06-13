@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DiagnosticService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">diagnosticMicroservice</a> &gt; <a href="index.source.html" class="el_package">com.medicscreen.diagnosticmicroservice.service</a> &gt; <span class="el_source">DiagnosticService.java</span></div><h1>DiagnosticService.java</h1><pre class="source lang-java linenums">package com.medicscreen.diagnosticmicroservice.service;
+
+import com.medicscreen.diagnosticmicroservice.configuration.LocalDateConfigurator;
+import com.medicscreen.diagnosticmicroservice.proxies.NoteProxy;
+import com.medicscreen.diagnosticmicroservice.proxies.PatientProxy;
+import com.medicscreen.diagnosticmicroservice.proxies.beans.Diagnostic;
+import com.medicscreen.diagnosticmicroservice.proxies.beans.Note;
+import com.medicscreen.diagnosticmicroservice.proxies.beans.Patient;
+import com.medicscreen.diagnosticmicroservice.proxies.beans.Patient.PatientBuilder;
+import com.medicscreen.diagnosticmicroservice.proxies.dto.NoteDTO;
+import com.medicscreen.diagnosticmicroservice.proxies.dto.PatientDTO;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
+
+@Service
+public class DiagnosticService {
+
+  private final LocalDateConfigurator localDate;
+  private final PatientProxy patientProxy;
+  private final NoteProxy noteProxy;
+
+<span class="fc" id="L25">  public DiagnosticService(LocalDateConfigurator localDate, PatientProxy patientProxy, NoteProxy noteProxy) {</span>
+<span class="fc" id="L26">    this.localDate = localDate;</span>
+<span class="fc" id="L27">    this.patientProxy = patientProxy;</span>
+<span class="fc" id="L28">    this.noteProxy = noteProxy;</span>
+<span class="fc" id="L29">  }</span>
+
+  public Diagnostic generateDiagnostic(int patientId) {
+<span class="fc" id="L32">    Patient patient= getPatient(patientId);</span>
+
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">    if (Objects.nonNull(patient)) {</span>
+<span class="fc" id="L35">      List&lt;Note&gt; notes= getNotes(patientId);</span>
+
+<span class="fc" id="L37">      String result = &quot;&quot;;</span>
+
+<span class="fc" id="L39">      int age= calculateAge(patient);</span>
+<span class="fc" id="L40">      int marker= analyzeNote(notes);</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">      if(notes.isEmpty() | Objects.isNull(notes)){</span>
+<span class="fc" id="L43">        result= &quot;None&quot;;</span>
+      }
+
+<span class="pc bpc" id="L46" title="1 of 8 branches missed.">      else if(marker&lt;=1 | age&gt;30 &amp; marker&gt;=6 ){</span>
+<span class="fc" id="L47">        result= diagnosticToCommon(age,marker);</span>
+      }
+
+<span class="fc bfc" id="L50" title="All 2 branches covered.">      else if (patient.getGender().equals(&quot;M&quot;)) {</span>
+<span class="fc" id="L51">        result= diagnosticToMan(age, marker);</span>
+      }
+
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">      else if (patient.getGender().equals(&quot;F&quot;)){</span>
+<span class="fc" id="L55">        result= diagnosticToWoman(age, marker);</span>
+      }
+<span class="fc" id="L57">      return new Diagnostic(age,result);</span>
+    }
+<span class="nc" id="L59">    return null;</span>
+  }
+
+  private Patient getPatient(Integer id){
+<span class="fc" id="L63">    PatientDTO patientDTO=patientProxy.getPatientDTO(id);</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    if (Objects.nonNull(patientDTO)) {</span>
+<span class="fc" id="L65">      return new PatientBuilder()</span>
+<span class="fc" id="L66">          .gender(patientDTO.getGender())</span>
+<span class="fc" id="L67">          .dateOfBirth(LocalDate.parse(patientDTO.getDateOfBirth()))</span>
+<span class="fc" id="L68">          .build();</span>
+    }
+<span class="nc" id="L70">    return null;</span>
+  }
+
+  private List&lt;Note&gt;getNotes(Integer patientId){
+<span class="fc" id="L74">    List&lt;Note&gt; notes=new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L75">    List&lt;NoteDTO&gt; notesDto= noteProxy.getNoteDto(patientId);</span>
+
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">    if (notesDto!=null) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">      for (NoteDTO noteDto:notesDto){</span>
+<span class="fc" id="L79">        Note note= new Note(noteDto.getNoteContent());</span>
+<span class="fc" id="L80">        notes.add(note);</span>
+<span class="fc" id="L81">      }return notes;</span>
+    }
+<span class="nc" id="L83">    return Collections.emptyList();</span>
+  }
+
+  private int calculateAge(Patient patient) {
+<span class="fc" id="L87">    return Period.between(patient.getDateOfBirth(), localDate.now()).getYears();</span>
+  }
+
+  private int analyzeNote(List&lt;Note&gt; notes) {
+<span class="fc" id="L91">    List&lt;String&gt; markers=new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L92">    List&lt;String&gt; notesToAnalyze= new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L93">    int markerCount=0;</span>
+
+<span class="fc" id="L95">    markers.addAll(List.of(&quot;hÃ©moglobine a1c&quot;,&quot;microalbumine&quot;,&quot;taille&quot;,&quot;poids&quot;,&quot;fumeur&quot;,&quot;anormal&quot;,</span>
+        &quot;cholestÃ©rol&quot;,&quot;vertige&quot;,&quot;rechute&quot;,&quot;rÃ©action&quot;,&quot;anticorps&quot;));
+
+<span class="fc bfc" id="L98" title="All 2 branches covered.">    for (Note note:notes){</span>
+<span class="fc" id="L99">      String noteLowerCase= note.getNoteContent().toLowerCase(Locale.ROOT);</span>
+<span class="fc" id="L100">      notesToAnalyze.add(noteLowerCase);</span>
+<span class="fc" id="L101">    }</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">    for (String marker:markers){</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">      for (String note:notesToAnalyze){</span>
+<span class="fc" id="L105">        boolean markerIsPresent=note.contains(marker);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (markerIsPresent){</span>
+<span class="fc" id="L107">          markerCount++;</span>
+        }
+<span class="fc" id="L109">      }</span>
+<span class="fc" id="L110">    }</span>
+
+<span class="fc" id="L112">    return markerCount;</span>
+  }
+
+  private String diagnosticToWoman(int age, int marker) {
+<span class="fc" id="L116">    String result=&quot;&quot;;</span>
+
+<span class="fc bfc" id="L118" title="All 2 branches covered.">    if(age&lt;30){</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">      if (marker&gt;=7){</span>
+<span class="fc" id="L120">        result= &quot;Early Onset&quot;;</span>
+      }
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">      else if (marker&gt;=4){</span>
+<span class="fc" id="L123">        result= &quot;In Danger&quot;;</span>
+      }
+<span class="nc bnc" id="L125" title="All 2 branches missed.">      else if(marker&lt;=3){</span>
+<span class="nc" id="L126">        result=&quot;Borderline&quot;;</span>
+      }
+    }
+
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    if(age&gt;30){</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">      if (marker&lt;=5){</span>
+<span class="fc" id="L132">        result= &quot;Borderline&quot;;</span>
+      }
+    }
+<span class="fc" id="L135">    return result;</span>
+  }
+
+  private String diagnosticToMan(int age, int marker) {
+<span class="fc" id="L139">    String result=&quot;&quot;;</span>
+
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">    if(age&lt;30){</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">     if (marker&gt;=5){</span>
+<span class="fc" id="L143">        result= &quot;Early Onset&quot;;</span>
+      }
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">      else if (marker&gt;=3){</span>
+<span class="fc" id="L146">        result= &quot;In Danger&quot;;</span>
+      }
+<span class="nc bnc" id="L148" title="All 2 branches missed.">      else if (marker&lt;=2){</span>
+<span class="nc" id="L149">        result=&quot;Borderline&quot;;</span>
+      }
+    }
+
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">    if (age&gt;30){</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">      if (marker&lt;=5){</span>
+<span class="nc" id="L155">        result= &quot;Borderline&quot;;</span>
+      }
+    }
+<span class="fc" id="L158">    return result;</span>
+  }
+
+  private String diagnosticToCommon(int age, int marker){
+<span class="fc" id="L162">    String result=&quot;&quot;;</span>
+
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">    if (marker&lt;=1){</span>
+<span class="nc" id="L165">      result= &quot;None&quot;;</span>
+    }
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">    if (age&gt;30){</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">      if (marker&gt;=8){</span>
+<span class="fc" id="L169">      result= &quot;Early Onset&quot;;</span>
+      }
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">      else if(marker&gt;=6){</span>
+<span class="fc" id="L172">        result=&quot;In Danger&quot;;</span>
+      }
+    }
+<span class="fc" id="L175">    return result;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

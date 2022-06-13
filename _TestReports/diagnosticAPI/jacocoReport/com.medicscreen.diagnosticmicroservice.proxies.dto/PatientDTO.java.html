@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PatientDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">diagnosticMicroservice</a> &gt; <a href="index.source.html" class="el_package">com.medicscreen.diagnosticmicroservice.proxies.dto</a> &gt; <span class="el_source">PatientDTO.java</span></div><h1>PatientDTO.java</h1><pre class="source lang-java linenums">package com.medicscreen.diagnosticmicroservice.proxies.dto;
+
+public class PatientDTO {
+  private Integer id;
+  private String firstName;
+  private String lastName;
+  private String dateOfBirth;
+  private String gender;
+  private String address;
+  private String phone;
+
+<span class="nc" id="L12">  public PatientDTO(){}</span>
+
+  public PatientDTO(Integer id, String firstName, String lastName,
+<span class="fc" id="L15">                    String dateOfBirth, String gender, String address, String phone) {</span>
+<span class="fc" id="L16">    this.id = id;</span>
+<span class="fc" id="L17">    this.firstName = firstName;</span>
+<span class="fc" id="L18">    this.lastName = lastName;</span>
+<span class="fc" id="L19">    this.dateOfBirth = dateOfBirth;</span>
+<span class="fc" id="L20">    this.gender = gender;</span>
+<span class="fc" id="L21">    this.address = address;</span>
+<span class="fc" id="L22">    this.phone = phone;</span>
+<span class="fc" id="L23">  }</span>
+
+  public String getDateOfBirth() {
+<span class="fc" id="L26">    return dateOfBirth;</span>
+  }
+
+  public String getGender() {
+<span class="fc" id="L30">    return gender;</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
